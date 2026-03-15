@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 // ─── Claude API helper ────────────────────────────────────────────────────────
 async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
@@ -11,13 +11,17 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
       "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-5",
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     }),
   });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (!res.ok) {
+    const err = await res.json();
+    console.error("Claude API error:", err);
+    throw new Error(`API error ${res.status}: ${err?.error?.message || "unknown"}`);
+  }
   const data = await res.json();
   return data.content?.[0]?.text || "";
 }
@@ -719,7 +723,6 @@ Terms: ${batch.join(", ")}`;
 }
 
 // ─── PAGE: Dataset ────────────────────────────────────────────────────────────
-
 function DatasetPage() {
   const [search, setSearch] = useState("");
   const [entries, setEntries] = useState(DB.all());
