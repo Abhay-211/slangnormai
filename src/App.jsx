@@ -1,31 +1,36 @@
 import { useState, useEffect } from "react";
 
 // ─── Claude API helper ────────────────────────────────────────────────────────
-async function callAI(systemPrompt, userPrompt, maxTokens = 800) {
-  const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${import.meta.env.VITE_NVIDIA_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "openai/gpt-oss-20b",
-      max_tokens: maxTokens,
-      temperature: 1,
-      top_p: 1,
-      stream: false,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-    }),
-  });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(`API error ${res.status}: ${err?.message || "unknown"}`);
+async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
+  try {
+    const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${import.meta.env.VITE_NVIDIA_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "meta/llama-3.1-8b-instruct",
+        max_tokens: maxTokens,
+        temperature: 0.7,
+        top_p: 1,
+        stream: false,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
+        ],
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(`API error ${res.status}: ${err?.message || "unknown"}`);
+    }
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || "";
+  } catch (err) {
+    console.error("API error:", err);
+    throw err;
   }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || "";
 }
 
 
