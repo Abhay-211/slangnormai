@@ -16,9 +16,26 @@ export default async function handler(req, res) {
       body: JSON.stringify(req.body),
     });
 
-    const data = await response.json();
-    res.status(response.status).json(data);
+    // Read raw text first before parsing
+    const rawText = await response.text();
+    console.log("NVIDIA raw response:", rawText);
+    console.log("NVIDIA status:", response.status);
+
+    // If empty response
+    if (!rawText || rawText.trim() === "") {
+      return res.status(500).json({ error: "Empty response from NVIDIA API" });
+    }
+
+    // Try to parse JSON
+    try {
+      const data = JSON.parse(rawText);
+      return res.status(response.status).json(data);
+    } catch (parseErr) {
+      return res.status(500).json({ error: "Invalid JSON from NVIDIA", raw: rawText });
+    }
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Handler error:", err);
+    return res.status(500).json({ error: err.message });
   }
 }

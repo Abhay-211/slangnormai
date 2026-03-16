@@ -5,9 +5,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
   try {
     const res = await fetch("/api/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "meta/llama-3.1-8b-instruct",
         max_tokens: maxTokens,
@@ -20,18 +18,27 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
         ],
       }),
     });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(`API error ${res.status}: ${err?.message || "unknown"}`);
+
+    const text = await res.text();
+    console.log("Response status:", res.status);
+    console.log("Response text:", text);
+
+    if (!text || text.trim() === "") {
+      throw new Error("Empty response from server");
     }
-    const data = await res.json();
+
+    const data = JSON.parse(text);
+
+    if (!res.ok) {
+      throw new Error(`API error ${res.status}: ${data?.error || JSON.stringify(data)}`);
+    }
+
     return data.choices?.[0]?.message?.content || "";
   } catch (err) {
-    console.error("API error:", err);
+    console.error("callClaude error:", err);
     throw err;
   }
 }
-
 
 // ─── In-memory database ───────────────────────────────────────────────────────
 const DB = {
