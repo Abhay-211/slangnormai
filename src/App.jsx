@@ -3,11 +3,10 @@ import { useState, useEffect } from "react";
 // ─── Claude API helper ────────────────────────────────────────────────────────
 async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
   try {
-    const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    const res = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${import.meta.env.VITE_NVIDIA_API_KEY}`,
       },
       body: JSON.stringify({
         model: "meta/llama-3.1-8b-instruct",
