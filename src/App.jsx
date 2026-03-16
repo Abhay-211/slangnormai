@@ -1,30 +1,33 @@
 import { useState, useEffect } from "react";
 
 // ─── Claude API helper ────────────────────────────────────────────────────────
-async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+async function callAI(systemPrompt, userPrompt, maxTokens = 800) {
+  const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
+      "Authorization": `Bearer ${import.meta.env.VITE_NVIDIA_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-5",
+      model: "openai/gpt-oss-20b",
       max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
+      temperature: 1,
+      top_p: 1,
+      stream: false,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
     }),
   });
   if (!res.ok) {
     const err = await res.json();
-    console.error("Claude API error:", err);
-    throw new Error(`API error ${res.status}: ${err?.error?.message || "unknown"}`);
+    throw new Error(`API error ${res.status}: ${err?.message || "unknown"}`);
   }
   const data = await res.json();
-  return data.content?.[0]?.text || "";
+  return data.choices?.[0]?.message?.content || "";
 }
+
 
 // ─── In-memory database ───────────────────────────────────────────────────────
 const DB = {
