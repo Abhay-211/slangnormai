@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+console.log("OpenAI Key:", import.meta.env.VITE_OPENAI_API_KEY ? "LOADED ✅" : "MISSING ❌");
 
 // ─── Claude API helper ────────────────────────────────────────────────────────
 async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
