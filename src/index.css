@@ -9,11 +9,100 @@ body {
   color: #f0f4ff;
 }
 
-::-webkit-scrollbar {
-  width: 4px;
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 2px; }
+
+/* ── Responsive fixes ── */
+
+/* Navbar */
+nav > div {
+  flex-wrap: wrap;
+  height: auto !important;
+  padding: 10px 16px !important;
+  gap: 10px !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #06b6d4;
-  border-radius: 2px;
+/* Nav links scroll on mobile */
+nav > div > div:nth-child(2) {
+  overflow-x: auto;
+  flex-wrap: nowrap !important;
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+/* All pages max width padding */
+@media (max-width: 768px) {
+
+  /* Page containers */
+  div[style*="maxWidth: 1200"] {
+    padding: 20px 12px !important;
+  }
+
+  /* All 2-column grids → single column */
+  div[style*="gridTemplateColumns: \"1fr 1fr\""],
+  div[style*="gridTemplateColumns: '1fr 1fr'"],
+  div[style*='gridTemplateColumns: "1fr 1fr"'] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 3 column grids → single column */
+  div[style*="gridTemplateColumns: \"1fr 1fr 1fr\""],
+  div[style*='gridTemplateColumns: "1fr 1fr 1fr"'] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 4 column grids → 2 columns */
+  div[style*="gridTemplateColumns: \"repeat(4,1fr)\""],
+  div[style*='gridTemplateColumns: "repeat(4,1fr)"'] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* 3 column repeat grids → single */
+  div[style*="gridTemplateColumns: \"repeat(3"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sentence gen left panel */
+  div[style*="gridTemplateColumns: \"400px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Crawler left panel */
+  div[style*="gridTemplateColumns: \"340px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Dataset table - make scrollable */
+  div[style*="gridTemplateColumns: \"140px 1fr"] {
+    grid-template-columns: 120px 1fr 90px 90px 50px !important;
+    font-size: 11px !important;
+  }
+
+  /* Headings */
+  h2[style*="fontSize: 28"] {
+    font-size: 22px !important;
+  }
+
+  /* Buttons full width on mobile */
+  button[style*="width: \"100%\""] {
+    width: 100% !important;
+  }
+
+  /* Cards padding smaller */
+  div[style*="padding: 22"] {
+    padding: 14px !important;
+  }
+
+  /* Font sizes */
+  div[style*="fontSize: 28"] {
+    font-size: 20px !important;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+  div[style*="gridTemplateColumns: \"repeat(4,1fr)\""],
+  div[style*='gridTemplateColumns: "repeat(4,1fr)"'] {
+    grid-template-columns: 1fr !important;
+  }
 }
