@@ -2,42 +2,28 @@ import { useState, useEffect } from "react";
 
 // ─── Claude API helper ────────────────────────────────────────────────────────
 async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "meta/llama-3.1-8b-instruct",
-        max_tokens: maxTokens,
-        temperature: 0.7,
-        top_p: 1,
-        stream: false,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
-        ],
-      }),
-    });
-
-    const text = await res.text();
-    console.log("Response status:", res.status);
-    console.log("Response text:", text);
-
-    if (!text || text.trim() === "") {
-      throw new Error("Empty response from server");
-    }
-
-    const data = JSON.parse(text);
-
-    if (!res.ok) {
-      throw new Error(`API error ${res.status}: ${data?.error || JSON.stringify(data)}`);
-    }
-
-    return data.choices?.[0]?.message?.content || "";
-  } catch (err) {
-    console.error("callClaude error:", err);
-    throw err;
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      max_tokens: maxTokens,
+      temperature: 0.7,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(`API error ${res.status}: ${err?.error?.message || "unknown"}`);
   }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "";
 }
 
 // ─── In-memory database ───────────────────────────────────────────────────────
