@@ -1,32 +1,19 @@
 import { useState, useEffect } from "react";
-console.log("OpenAI Key:", import.meta.env.VITE_OPENAI_API_KEY ? "LOADED ✅" : "MISSING ❌");
 
 // ─── Claude API helper ────────────────────────────────────────────────────────
 async function callClaude(systemPrompt, userPrompt, maxTokens = 800) {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch("/api/normalize", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      max_tokens: maxTokens,
-      temperature: 0.7,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ systemPrompt, userPrompt, maxTokens }),
   });
   if (!res.ok) {
     const err = await res.json();
-    throw new Error(`API error ${res.status}: ${err?.error?.message || "unknown"}`);
+    throw new Error(`API error ${res.status}: ${err?.error || "unknown"}`);
   }
   const data = await res.json();
-  return data.choices?.[0]?.message?.content || "";
+  return data.content || "";
 }
-
 // ─── In-memory database ───────────────────────────────────────────────────────
 const DB = {
   slang: new Map(),
@@ -862,14 +849,54 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif" }}>
       <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        textarea, input, button { font-family: inherit; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
-        textarea:focus, input:focus { border-color: rgba(6,182,212,0.5) !important; box-shadow: 0 0 0 3px rgba(6,182,212,0.08); }
-      `}</style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  textarea, input, button { font-family: inherit; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+  textarea:focus, input:focus { border-color: rgba(6,182,212,0.5) !important; box-shadow: 0 0 0 3px rgba(6,182,212,0.08); }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 768px) {
+
+    /* Navbar */
+    .nav-inner {
+      flex-wrap: wrap !important;
+      height: auto !important;
+      padding: 10px 16px !important;
+      gap: 8px !important;
+    }
+    .nav-pages {
+      overflow-x: auto !important;
+      width: 100% !important;
+      padding-bottom: 4px;
+    }
+    .nav-pages button {
+      font-size: 11px !important;
+      padding: 5px 8px !important;
+    }
+
+    /* Page wrapper */
+    .page-wrap { padding: 20px 12px !important; }
+
+    /* All grids → single column */
+    .grid-2col, .grid-3col, .grid-4col,
+    .grid-sentencegen, .grid-crawler { 
+      grid-template-columns: 1fr !important; 
+    }
+
+    /* 4 stats → 2x2 */
+    .grid-stats { grid-template-columns: 1fr 1fr !important; }
+
+    /* Headings */
+    .page-title { font-size: 22px !important; }
+
+    /* Dataset table scroll */
+    .dataset-table { overflow-x: auto !important; }
+    .dataset-table > div { min-width: 500px; }
+  }
+`}</style>
 
       <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(6,6,18,0.92)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: 58, display: "flex", alignItems: "center", gap: 20 }}>
