@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  history   NormalizationHistory[]
+}
+
+model SlangEntry {
+  id                 String   @id @default(uuid())
+  slang              String   @unique
+  meaning            String
+  category           String   @default("other")
+  source             String   @default("user-added")
+  sourceUrl          String?
+  examples           String[]
+  exampleTranslation String?
+  lookups            Int      @default(0)
+  isNew              Boolean  @default(true)
+  addedAt            DateTime @default(now())
+
+  @@index([slang])
+  @@index([category])
+}
+
+model NormalizationHistory {
+  id             String   @id @default(uuid())
+  userId         String
+  originalText   String
+  normalizedText String
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

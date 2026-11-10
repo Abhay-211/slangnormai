@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: #04040e;
+  color: #f0f4ff;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar { 
+  width: 5px; 
+  height: 5px; 
+}
+::-webkit-scrollbar-track { 
+  background: rgba(4, 4, 14, 0.8); 
+}
+::-webkit-scrollbar-thumb { 
+  background: #06b6d4; 
+  border-radius: 3px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: #22d3ee; 
+}
+
+/* Utilities for glowing and cyber aesthetic */
+.neon-text {
+  color: #06b6d4;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.neon-border {
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.btn-launch-studio {
+  background: #06b6d4;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #6366f1 100%);
+  color: #04040e !important;
+  font-weight: 900 !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-launch-studio:hover {
+  background: linear-gradient(135deg, #22d3ee 0%, #60a5fa 50%, #818cf8 100%);
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.7), 0 6px 16px rgba(0, 0, 0, 0.6);
+  transform: translateY(-1px) scale(1.03);
+}
+
+.brand-logo-badge {
+  background: #06b6d4;
+  background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #6366f1 100%);
+  color: #04040e;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+}
+
+.text-gradient-cyan {
+  color: #22d3ee;
+  background: linear-gradient(90deg, #22d3ee, #2dd4bf, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.energy-pulse {
+  animation: energy-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes energy-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 5px rgba(6, 182, 212, 0.2);
+  }
+}
+
+.data-flow-line {
+  background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+}
+
+/* Hide scrollbars when needed */
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar,
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

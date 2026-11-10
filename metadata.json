@@ -1,0 +1,7 @@
+{
+  "name": "SlangNorm AI",
+  "description": "AI Slang Normalizer, contextual sentence generator, web data crawler, live slang database, and analytics dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
